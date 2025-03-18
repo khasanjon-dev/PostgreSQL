@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: postgres
+    command: [ 'postgres', '-c', 'wal_level=logical' ]
+
+    healthcheck:
+      test: [ 'CMD', 'psql', '-U', 'postgres', '-c', 'SELECT 1' ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql-commands/postgresql/trigger.sql:/tmp/trigger.sql
+
+
+volumes:
+  postgres_data:
