@@ -1,43 +1,30 @@
 CREATE TABLE users
 (
-    id    SERIAL PRIMARY KEY,
-    name  VARCHAR(50),
-    email VARCHAR(100)
+    id         SERIAL PRIMARY KEY,
+    name       TEXT,
+    email      TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE orders
 (
-    id      SERIAL PRIMARY KEY,
-    user_id INT,
-    amount  DECIMAL(10, 2)
+    id         SERIAL PRIMARY KEY,
+    user_id    INT,
+    amount     DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 
-CREATE TABLE products
-(
-    id    SERIAL PRIMARY KEY,
-    name  VARCHAR(100),
-    price DECIMAL(10, 2)
-);
 
-INSERT INTO users (name, email)
-SELECT 'User ' || i, 'user' || i || '@example.com'
-FROM generate_series(1, 100) AS i;
-
-INSERT INTO orders (user_id, amount)
-SELECT (random() * 100 + 1)::int, (random() * 500 + 10) ::numeric(10, 2)
-FROM generate_series(1, 100);
-
-INSERT INTO products (name, price)
-SELECT 'Product ' || gs, (random() * 100 + 1)::numeric(10, 2)
-FROM generate_series(1, 100) AS gs;
+INSERT INTO users (name, email, created_at)
+SELECT 'User_' || generate_series,
+       'user' || generate_series || '@example.com',
+       NOW() - (random() * interval '5 years')
+FROM generate_series(1, 5000000);
 
 
-select count(*)
-from users;
-
-select count(*)
-from orders;
-
-select count(*)
-from products;
+INSERT INTO orders (user_id, amount, created_at)
+SELECT floor(random() * 5000000) + 1,
+       round((random() * 1000 + 10)::numeric, 2),
+       NOW() - (random() * interval '5 years')
+FROM generate_series(1, 5000000);
